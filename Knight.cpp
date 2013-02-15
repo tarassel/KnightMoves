@@ -1,3 +1,4 @@
+/*
 // Deep drilling, wrong, should go wide not down
 #include "stdafx.h"
 #include <vector>
@@ -111,4 +112,4 @@ int _tmain(int argc, _TCHAR* argv[])
 	GetKnightPath(from, to);
 
 	return 0;
-}
+}*/
