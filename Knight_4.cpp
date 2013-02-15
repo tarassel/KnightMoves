@@ -133,16 +133,16 @@ vector<vector<Pos>> GetKnightPath(const Pos& from, const Pos& to)
 	cout << "Search complete" << endl;
 
 	// Expand result node to path
-	if (!resNodes.empty())
+	for (vector<MovesNode*>::const_iterator it = resNodes.cbegin(); it != resNodes.end(); ++it)
 	{
-		MovesNode* resNode = resNodes.back();
-		resNodes.pop_back();
-
+		MovesNode* resNode = *it;
+		vector<Pos> resPath;
 		do 
 		{
-			resPath.push_back(resNode->pos); // fix
+			resPath.push_back(resNode->pos);
 			resNode = resNode->parent;
 		} while (resNode);
+		resPathes.push_back(resPath);
 	}
 
 	return resPathes;
@@ -155,14 +155,17 @@ int _tmain(int argc, _TCHAR* argv[])
 	cout << "Start for board " << size << "x" << size << " from " << strpos(from) << " to " << strpos(to) << endl;
 	vector<vector<Pos>> resPathes = GetKnightPath(from, to);
 
-	if (resPath.empty())
+	if (resPathes.empty())
 		cout << "No results found" << endl;
 	else
 	{
-		cout << "Result: ";
-		for (vector<Pos>::reverse_iterator pos = resPath.rbegin(); pos != resPath.rend(); ++pos) // fix
-			cout << " -> " << strpos(*pos);
-		cout << endl;
+		cout << "Result: " << endl;
+		for (vector<vector<Pos>>::const_iterator it = resPathes.cbegin(); it != resPathes.end(); ++it)
+		{
+			for (vector<Pos>::const_reverse_iterator pos = (*it).crbegin(); pos != (*it).rend(); ++pos)
+				cout << " -> " << strpos(*pos);
+			cout << endl;
+		}
 	}
 
 	return 0;
