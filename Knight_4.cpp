@@ -1,5 +1,4 @@
-/*
-// Just plaing around
+// Find all pathes
 
 #include "stdafx.h"
 #include <vector>
@@ -77,9 +76,9 @@ struct MovesNode
 	}
 };
 
-vector<Pos> GetKnightPath(const Pos& from, const Pos& to)
+vector<vector<Pos>> GetKnightPath(const Pos& from, const Pos& to)
 {
-	vector<Pos> resPath;
+	vector<vector<Pos>> resPathes;
 	vector<MovesNode*> resNodes;
 	MovesNode root;
 	root.pos = from;
@@ -110,7 +109,9 @@ vector<Pos> GetKnightPath(const Pos& from, const Pos& to)
 				cout << "> New node: ";
 				node->moves.push_back(MovesNode(moves[i], node));
 				cout << node->moves.back().strPath() << endl;
-				visitedCells.push_back(moves[i]);
+				// Allow other to find "to"
+				if (moves[i] != to)
+					visitedCells.push_back(moves[i]);
 			}
 			// Copy subnodes to next level
 			for (vector<MovesNode>::iterator pos = node->moves.begin(); pos != node->moves.end(); ++pos)
@@ -139,12 +140,12 @@ vector<Pos> GetKnightPath(const Pos& from, const Pos& to)
 
 		do 
 		{
-			resPath.push_back(resNode->pos);
+			resPath.push_back(resNode->pos); // fix
 			resNode = resNode->parent;
 		} while (resNode);
 	}
 
-	return resPath;
+	return resPathes;
 }
 
 int _tmain(int argc, _TCHAR* argv[])
@@ -152,14 +153,14 @@ int _tmain(int argc, _TCHAR* argv[])
 	size = 8;
 	Pos from(0,0), to(7,7);
 	cout << "Start for board " << size << "x" << size << " from " << strpos(from) << " to " << strpos(to) << endl;
-	vector<Pos> resPath = GetKnightPath(from, to);
+	vector<vector<Pos>> resPathes = GetKnightPath(from, to);
 
 	if (resPath.empty())
 		cout << "No results found" << endl;
 	else
 	{
 		cout << "Result: ";
-		for (vector<Pos>::reverse_iterator pos = resPath.rbegin(); pos != resPath.rend(); ++pos)
+		for (vector<Pos>::reverse_iterator pos = resPath.rbegin(); pos != resPath.rend(); ++pos) // fix
 			cout << " -> " << strpos(*pos);
 		cout << endl;
 	}
@@ -167,4 +168,3 @@ int _tmain(int argc, _TCHAR* argv[])
 	return 0;
 }
 
-*/
