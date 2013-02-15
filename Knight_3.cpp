@@ -1,5 +1,4 @@
-/*
-// Go wide
+// Just plaing around
 
 #include "stdafx.h"
 #include <vector>
@@ -7,23 +6,19 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <utility>
 
 using namespace std;
 
-struct Pos
-{
-	Pos():x(0),y(0){}
-	Pos(int _x, int _y):x(_x),y(_y){}
-	int x, y;
-	Pos* move(int _x, int _y){x += _x; y += _y; return this;}
-	bool operator==(const Pos& rval) const { if (x == rval.x && y == rval.y) return true; return false;}
-	bool operator!=(const Pos& rval) const { return !(*this==rval);}
-	string str() const {
- 		ostringstream oss;
-		oss << "[" << x << ":" << y << "]";
-		return oss.str();
-	}
-};
+typedef pair<int, int> Pos;
+#define X(p) p.first
+#define Y(p) p.second
+Pos& move(Pos& p, int x, int y){X(p) += x; Y(p) += y; return p;}
+string strpos(const Pos& p) {
+  	ostringstream oss;
+ 	oss << "[" << X(p) << ":" << Y(p) << "]";
+ 	return oss.str();
+}
 
 vector<Pos> moves;
 vector<Pos> visitedCells;
@@ -31,7 +26,7 @@ unsigned size = 4;
 
 bool IsOnBoard(const Pos& pos)
 {
-	if (pos.x >= 0 && pos.x < size && pos.y >= 0 && pos.y < size)
+	if (X(pos) >= 0 && X(pos) < size && Y(pos) >= 0 && Y(pos) < size)
 		return true;
 	return false;
 }
@@ -41,21 +36,21 @@ vector<Pos> FindMoves(const Pos& from)
 	vector<Pos> possibleMoves;
 	Pos fromLoc = from;
 
-	if (IsOnBoard(*fromLoc.move(-1,2)))
+	if (IsOnBoard(move(fromLoc,-1,2)))
 		possibleMoves.push_back(fromLoc);
-	if (IsOnBoard(*fromLoc.move(-1,-1)))
+	if (IsOnBoard(move(fromLoc,-1,-1)))
 		possibleMoves.push_back(fromLoc);
-	if (IsOnBoard(*fromLoc.move(0,-2)))
+	if (IsOnBoard(move(fromLoc,0,-2)))
 		possibleMoves.push_back(fromLoc);
-	if (IsOnBoard(*fromLoc.move(1,-1)))
+	if (IsOnBoard(move(fromLoc,1,-1)))
 		possibleMoves.push_back(fromLoc);
-	if (IsOnBoard(*fromLoc.move(2,0)))
+	if (IsOnBoard(move(fromLoc,2,0)))
 		possibleMoves.push_back(fromLoc);
-	if (IsOnBoard(*fromLoc.move(1,1)))
+	if (IsOnBoard(move(fromLoc,1,1)))
 		possibleMoves.push_back(fromLoc);
-	if (IsOnBoard(*fromLoc.move(0,2)))
+	if (IsOnBoard(move(fromLoc,0,2)))
 		possibleMoves.push_back(fromLoc);
-	if (IsOnBoard(*fromLoc.move(-1,1)))
+	if (IsOnBoard(move(fromLoc,-1,1)))
 		possibleMoves.push_back(fromLoc);
 
 	return possibleMoves;
@@ -74,7 +69,7 @@ struct MovesNode
 		const MovesNode* node = this;
 		do 
 		{
-			oss << "[" << node->pos.x << ":" << node->pos.y << "] ";
+			oss << "[" << X(node->pos) << ":" << Y(node->pos) << "] ";
 			node = node->parent;
 		} while (node);
 		return oss.str();
@@ -155,7 +150,7 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	size = 8;
 	Pos from(0,0), to(7,7);
-	cout << "Start for board " << size << "x" << size << " from " << from.str() << " to " << to.str() << endl;
+	cout << "Start for board " << size << "x" << size << " from " << strpos(from) << " to " << strpos(to) << endl;
 	vector<Pos> resPath = GetKnightPath(from, to);
 
 	if (resPath.empty())
@@ -164,10 +159,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		cout << "Result: ";
 		for (vector<Pos>::reverse_iterator pos = resPath.rbegin(); pos != resPath.rend(); ++pos)
-			cout << " -> " << pos->str();
+			cout << " -> " << strpos(*pos);
 		cout << endl;
 	}
 
 	return 0;
 }
-*/
+
