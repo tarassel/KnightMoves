@@ -10,15 +10,19 @@
 
 using namespace std;
 
-typedef pair<int, int> Pos;
-#define X(p) p.first
-#define Y(p) p.second
-Pos& move(Pos& p, int x, int y){X(p) += x; Y(p) += y; return p;}
-string strpos(const Pos& p) {
-  	ostringstream oss;
- 	oss << "[" << X(p) << ":" << Y(p) << "]";
- 	return oss.str();
-}
+struct Pos : public pair<int, int>
+{
+	Pos():pair<int, int>(){}
+	Pos(int x, int y):pair<int, int>(x, y){}
+	int x() const {return first;}
+	int y() const {return second;}
+	Pos& move(int x, int y){first += x; second += y; return *this;}
+	string str() const {
+		ostringstream oss;
+		oss << "[" << x() << ":" << y() << "]";
+		return oss.str();
+	}
+};
 
 vector<Pos> moves;
 vector<Pos> visitedCells;
@@ -26,7 +30,7 @@ unsigned size = 4;
 
 bool IsOnBoard(const Pos& pos)
 {
-	if (X(pos) >= 0 && X(pos) < size && Y(pos) >= 0 && Y(pos) < size)
+	if (pos.x() >= 0 && pos.x() < size && pos.y() >= 0 && pos.y() < size)
 		return true;
 	return false;
 }
@@ -36,21 +40,21 @@ vector<Pos> FindMoves(const Pos& from)
 	vector<Pos> possibleMoves;
 	Pos fromLoc = from;
 
-	if (IsOnBoard(move(fromLoc,-1,2)))
+	if (IsOnBoard(fromLoc.move(-1,2)))
 		possibleMoves.push_back(fromLoc);
-	if (IsOnBoard(move(fromLoc,-1,-1)))
+	if (IsOnBoard(fromLoc.move(-1,-1)))
 		possibleMoves.push_back(fromLoc);
-	if (IsOnBoard(move(fromLoc,0,-2)))
+	if (IsOnBoard(fromLoc.move(0,-2)))
 		possibleMoves.push_back(fromLoc);
-	if (IsOnBoard(move(fromLoc,1,-1)))
+	if (IsOnBoard(fromLoc.move(1,-1)))
 		possibleMoves.push_back(fromLoc);
-	if (IsOnBoard(move(fromLoc,2,0)))
+	if (IsOnBoard(fromLoc.move(2,0)))
 		possibleMoves.push_back(fromLoc);
-	if (IsOnBoard(move(fromLoc,1,1)))
+	if (IsOnBoard(fromLoc.move(1,1)))
 		possibleMoves.push_back(fromLoc);
-	if (IsOnBoard(move(fromLoc,0,2)))
+	if (IsOnBoard(fromLoc.move(0,2)))
 		possibleMoves.push_back(fromLoc);
-	if (IsOnBoard(move(fromLoc,-1,1)))
+	if (IsOnBoard(fromLoc.move(-1,1)))
 		possibleMoves.push_back(fromLoc);
 
 	return possibleMoves;
@@ -69,7 +73,7 @@ struct MovesNode
 		const MovesNode* node = this;
 		do 
 		{
-			oss << "[" << X(node->pos) << ":" << Y(node->pos) << "] ";
+			oss << "[" << node->pos.x() << ":" << node->pos.y() << "] ";
 			node = node->parent;
 		} while (node);
 		return oss.str();
@@ -152,7 +156,7 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	size = 8;
 	Pos from(0,0), to(7,7);
-	cout << "Start for board " << size << "x" << size << " from " << strpos(from) << " to " << strpos(to) << endl;
+	cout << "Start for board " << size << "x" << size << " from " << from.str() << " to " << to.str() << endl;
 	vector<vector<Pos>> resPathes = GetKnightPath(from, to);
 
 	if (resPathes.empty())
@@ -163,7 +167,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		for (vector<vector<Pos>>::const_iterator it = resPathes.cbegin(); it != resPathes.end(); ++it)
 		{
 			for (vector<Pos>::const_reverse_iterator pos = (*it).crbegin(); pos != (*it).rend(); ++pos)
-				cout << " -> " << strpos(*pos);
+				cout << " -> " << pos->str();
 			cout << endl;
 		}
 	}
